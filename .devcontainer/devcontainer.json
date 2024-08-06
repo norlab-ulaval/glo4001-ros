@@ -1,0 +1,71 @@
+{
+	"name": "glo4001",
+	"build": {
+		"context": "..",
+		"dockerfile": "../docker/Dockerfile",
+		"args": {
+			"WORKSPACE": "${containerWorkspaceFolder}",
+			"REMOTE_USER": "${localEnv:USER}",
+			"REMOTE_UID": "${localEnv:REMOTE_UID:1000}",
+			"REMOTE_GID": "${localEnv:REMOTE_GID:1000}"
+		}
+	},
+	// "remoteUser": "${localEnv:USER}",
+	"workspaceFolder": "/workspaces/ros_ws",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/ros_ws,type=bind",
+	"runArgs": [
+		"--ipc=host",
+		"--pid=host",
+		"--net=host",
+		"--cap-add=SYS_PTRACE",
+		"--security-opt=seccomp:unconfined",
+		"--security-opt=apparmor:unconfined",
+		"--privileged"
+		// uncomment to use intel iGPU
+		// "--device=/dev/dri"
+	],
+	"mounts": [
+		"source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
+		"source=/dev/shm,target=/dev/shm,type=bind",
+		"source=/dev/input,target=/dev/input,type=bind",
+		"type=bind,source=/home/${localEnv:USER}/.ssh,target=/root/.ssh,readonly"
+	],
+	"postCreateCommand": "echo \"source /opt/ros/$ROS_DISTRO/setup.bash\" >> ~/.bashrc && echo \"source /workspaces/ros_ws/install/setup.bash\" >> ~/.bashrc",
+	"containerEnv": {
+		"NVIDIA_VISIBLE_DEVICES": "all",
+		"NVIDIA_DRIVER_CAPABILITIES": "all",
+		"DISPLAY": "${localEnv:DISPLAY}",
+		"WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+		"XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
+		"PULSE_SERVER": "${localEnv:PULSE_SERVER}",
+		"LIBGL_ALWAYS_SOFTWARE": "1"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"ms-python.isort",
+				"ms-python.vscode-pylance",
+				"ms-python.gather",
+				"ms-python.autopep8",
+				"ms-python.debugpy",
+				"ms-vscode.cpptools",
+				"ms-vscode.cpptools-extension-pack",
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"althack.ament-task-provider",
+				"betwo.b2-catkin-tools",
+				"DotJoshJohnson.xml",
+				"ms-azuretools.vscode-docker",
+				"ms-iot.vscode-ros",
+				"redhat.vscode-yaml",
+				"smilerobotics.urdf",
+				"streetsidesoftware.code-spell-checker",
+				"twxs.cmake",
+				"yzhang.markdown-all-in-one",
+				"zachflower.uncrustify"
+			]
+		}
+	}
+}

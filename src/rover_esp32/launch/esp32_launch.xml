@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="rover_esp32" exec="rover_esp32_node" name="rover_esp32_node" output="screen"/>
+</launch>

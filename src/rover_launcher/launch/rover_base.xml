@@ -1,0 +1,39 @@
+<launch>
+    <!-- Control nodes -->
+    <!-- <include file="$(find-pkg-share rover_teleop)/launch/teleop.launch.xml"/> -->
+    <!-- <node pkg="rover_control_node" exec="driver_controller" name="driver_controller" output="screen"/> -->
+    <!-- <include file="$(find-pkg-share rover_teleop)/launch/twist_mux_launch.py"/> -->
+
+    <!-- Odom node -->
+    <!-- <node pkg="rover_odom" exec="rover_odom_node" name="rover_odom_node" output="screen"/> -->
+
+    <!-- Lidar node -->
+    <!-- <node pkg="ldlidar_ros2" exec="ldlidar_ros2_node" name="ldlidar_ros2_node" output="screen" respawn="true">
+        <param name="product_name" value="LDLiDAR_LD19"/>
+        <param name="laser_scan_topic_name" value="scan"/>
+        <param name="point_cloud_2d_topic_name" value="pointcloud2d"/>
+        <param name="frame_id" value="base_laser"/>
+        <param name="port_name" value="/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0"/>
+        <param name="serial_baudrate" value="230400"/>
+        <param name="laser_scan_dir" value="true"/>
+        <param name="enable_angle_crop_func" value="false"/>
+        <param name="angle_crop_min" value="135.0"/>
+        <param name="angle_crop_max" value="225.0"/>
+        <param name="range_min" value="0.02"/>
+        <param name="range_max" value="12.0"/>
+    </node> -->
+
+    <!-- Camera node -->
+    <!-- <include file="$(find-pkg-share depthai_ros_driver)/launch/camera.launch.py">
+        <arg name="params_file" value="$(find-pkg-share rover_launchers)/config/camera.yaml"/>
+    </include> -->
+
+    <!-- Payload Detection node -->
+    <!-- <node pkg="payload_detection" exec="payload_detection_node" name="payload_detection_node" output="screen"/> -->
+
+    <!-- Status node -->
+    <!-- <include file="$(find-pkg-share rover_status)/launch/status_launch.xml"/> -->
+
+    <!-- Description node -->
+    <!-- <include file="$(find-pkg-share rover_description)/launch/description_launch.py"/> -->
+</launch>

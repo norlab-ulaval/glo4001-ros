@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+build/
+install/
+log/
+venv/
+log.txt
+**/__pycache__/
+data/
+*.swp
