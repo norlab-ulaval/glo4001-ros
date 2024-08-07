@@ -26,6 +26,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'rover_esp32 = rover_esp32.rover_esp32:main',
         ],
     },
 )

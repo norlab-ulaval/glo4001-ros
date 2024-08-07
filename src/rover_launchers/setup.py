@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 from glob import glob
 import os
 
-package_name = 'rover_launcher'
+package_name = 'rover_launchers'
 
 setup(
     name=package_name,

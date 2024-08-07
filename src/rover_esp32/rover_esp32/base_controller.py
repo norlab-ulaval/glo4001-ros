@@ -3,15 +3,15 @@ import os
 import queue
 import threading
 import time
-
+from pathlib import Path
 import serial
 import yaml
+from ament_index_python.packages import get_package_share_directory
 
 from .read_line import ReadLine
 
-current_path = os.path.realpath(__file__)
-this_path = os.path.dirname(current_path)
-with open(this_path + '../config/config.yaml', 'r') as yaml_file:
+pkg_path = Path(get_package_share_directory('rover_esp32'))
+with open(pkg_path / 'config/config.yaml', 'r') as yaml_file:
     config = yaml.safe_load(yaml_file)
 
 
@@ -34,7 +34,7 @@ class BaseController:
         self.use_lidar = config['base_config']['use_lidar']
         self.extra_sensor = config['base_config']['extra_sensor']
 
-    def feedback_data(self):
+    def read_feedback(self):
         try:
             while self.rl.s.in_waiting > 0:
                 self.data_buffer = json.loads(
@@ -65,87 +65,97 @@ class BaseController:
             data = self.command_queue.get()
             self.ser.write((json.dumps(data) + '\n').encode("utf-8"))
 
-    def base_json_ctrl(self, input_json):
-        self.send_command(input_json)
-
-    def gimbal_emergency_stop(self):
-        data = {"T": 0}
+    def set_feedback_flow(self, enabled):
+        cmd = 1 if enabled else 0
+        data = {"T": 131, "cmd": cmd}
         self.send_command(data)
 
-    def base_speed_ctrl(self, input_left, input_right):
-        data = {"T": 1, "L": input_left, "R": input_right}
+    def set_feedback_delay_ms(self, delay):
+        data = {"T": 142, "cmd": delay}
         self.send_command(data)
 
-    def gimbal_ctrl(self, input_x, input_y, input_speed, input_acceleration):
-        data = {"T": 133, "X": input_x, "Y": input_y,
-                "SPD": input_speed, "ACC": input_acceleration}
+    def get_feedback(self):
+        data = {"T":130}
         self.send_command(data)
 
-    def gimbal_base_ctrl(self, input_x, input_y, input_speed):
-        data = {"T": 141, "X": input_x, "Y": input_y, "SPD": input_speed}
-        self.send_command(data)
+    # def gimbal_emergency_stop(self):
+    #     data = {"T": 0}
+    #     self.send_command(data)
 
-    def base_oled(self, input_line, input_text):
-        data = {"T": 3, "lineNum": input_line, "Text": input_text}
-        self.send_command(data)
+    # def base_speed_ctrl(self, input_left, input_right):
+    #     data = {"T": 1, "L": input_left, "R": input_right}
+    #     self.send_command(data)
 
-    def base_default_oled(self):
-        data = {"T": -3}
-        self.send_command(data)
+    # def gimbal_ctrl(self, input_x, input_y, input_speed, input_acceleration):
+    #     data = {"T": 133, "X": input_x, "Y": input_y,
+    #             "SPD": input_speed, "ACC": input_acceleration}
+    #     self.send_command(data)
 
-    def bus_servo_id_set(self, old_id, new_id):
-        # data = {"T":54,"old":old_id,"new":new_id}
-        data = {"T": config['cmd_config']
-                ['cmd_set_servo_id'], "raw": old_id, "new": new_id}
-        self.send_command(data)
+    # def gimbal_base_ctrl(self, input_x, input_y, input_speed):
+    #     data = {"T": 141, "X": input_x, "Y": input_y, "SPD": input_speed}
+    #     self.send_command(data)
 
-    def bus_servo_torque_lock(self, input_id, input_status):
-        # data = {"T":55,"id":input_id,"status":input_status}
-        data = {"T": config['cmd_config']['cmd_servo_torque'],
-                "id": input_id, "cmd": input_status}
-        self.send_command(data)
+    # def base_oled(self, input_line, input_text):
+    #     data = {"T": 3, "lineNum": input_line, "Text": input_text}
+    #     self.send_command(data)
 
-    def bus_servo_mid_set(self, input_id):
-        # data = {"T":58,"id":input_id}
-        data = {"T": config['cmd_config']['cmd_set_servo_mid'], "id": input_id}
-        self.send_command(data)
+    # def base_default_oled(self):
+    #     data = {"T": -3}
+    #     self.send_command(data)
 
-    def lights_ctrl(self, pwmA, pwmB):
-        data = {"T": 132, "IO4": pwmA, "IO5": pwmB}
-        self.send_command(data)
-        self.base_light_status = pwmA
-        self.head_light_status = pwmB
+    # def bus_servo_id_set(self, old_id, new_id):
+    #     # data = {"T":54,"old":old_id,"new":new_id}
+    #     data = {"T": config['cmd_config']
+    #             ['cmd_set_servo_id'], "raw": old_id, "new": new_id}
+    #     self.send_command(data)
 
-    def base_lights_ctrl(self):
-        if self.base_light_status != 0:
-            self.base_light_status = 0
-        else:
-            self.base_light_status = 255
-        self.lights_ctrl(self.base_light_status, self.head_light_status)
+    # def bus_servo_torque_lock(self, input_id, input_status):
+    #     # data = {"T":55,"id":input_id,"status":input_status}
+    #     data = {"T": config['cmd_config']['cmd_servo_torque'],
+    #             "id": input_id, "cmd": input_status}
+    #     self.send_command(data)
 
-    def gimbal_dev_close(self):
-        self.ser.close()
+    # def bus_servo_mid_set(self, input_id):
+    #     # data = {"T":58,"id":input_id}
+    #     data = {"T": config['cmd_config']['cmd_set_servo_mid'], "id": input_id}
+    #     self.send_command(data)
 
-    def change_breath_light_flag(self, input_cmd):
-        self.breath_light_flag = input_cmd
+    # def lights_ctrl(self, pwmA, pwmB):
+    #     data = {"T": 132, "IO4": pwmA, "IO5": pwmB}
+    #     self.send_command(data)
+    #     self.base_light_status = pwmA
+    #     self.head_light_status = pwmB
 
-    def breath_light(self, input_time):
-        self.change_breath_light_flag(True)
-        breath_start_time = time.monotonic()
-        while time.monotonic() - breath_start_time < input_time:
-            for i in range(0, 128, 10):
-                if not self.breath_light_flag:
-                    self.lights_ctrl(0, 0)
-                    return
-                self.lights_ctrl(i, 128 - i)
-                time.sleep(0.1)
-            for i in range(0, 128, 10):
-                if not self.breath_light_flag:
-                    self.lights_ctrl(0, 0)
-                    return
-                self.lights_ctrl(128 - i, i)
-                time.sleep(0.1)
-        self.lights_ctrl(0, 0)
+    # def base_lights_ctrl(self):
+    #     if self.base_light_status != 0:
+    #         self.base_light_status = 0
+    #     else:
+    #         self.base_light_status = 255
+    #     self.lights_ctrl(self.base_light_status, self.head_light_status)
+
+    # def gimbal_dev_close(self):
+    #     self.ser.close()
+
+    # def change_breath_light_flag(self, input_cmd):
+    #     self.breath_light_flag = input_cmd
+
+    # def breath_light(self, input_time):
+    #     self.change_breath_light_flag(True)
+    #     breath_start_time = time.monotonic()
+    #     while time.monotonic() - breath_start_time < input_time:
+    #         for i in range(0, 128, 10):
+    #             if not self.breath_light_flag:
+    #                 self.lights_ctrl(0, 0)
+    #                 return
+    #             self.lights_ctrl(i, 128 - i)
+    #             time.sleep(0.1)
+    #         for i in range(0, 128, 10):
+    #             if not self.breath_light_flag:
+    #                 self.lights_ctrl(0, 0)
+    #                 return
+    #             self.lights_ctrl(128 - i, i)
+    #             time.sleep(0.1)
+    #     self.lights_ctrl(0, 0)
 
 
 class BaseControllerSingleton(BaseController):

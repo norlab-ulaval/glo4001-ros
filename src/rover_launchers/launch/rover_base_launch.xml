@@ -1,4 +1,36 @@
 <launch>
+    <!-- rosbridge to communicate via websocket -->
+    <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" />
+    <!-- <node name="rosbridge_websocket" pkg="rosbridge_server" exec="rosbridge_websocket" output="screen">
+        <param name="port" value="9090"/>
+        <param name="address" value=""/>
+        <param name="retry_startup_delay" value="5.0"/>
+        <param name="fragment_timeout" value="600"/>
+        <param name="delay_between_messages" value="0"/>
+        <param name="max_message_size" value="10000000"/>
+        <param name="unregister_timeout" value="10.0"/>
+        <param name="use_compression" value="false"/>
+
+        <param name="topics_glob" value=""/>
+        <param name="services_glob" value=""/>
+        <param name="params_glob" value=""/>
+
+        <param name="bson_only_mode" value="false"/>
+    </node>
+
+    <node name="rosapi" pkg="rosapi" exec="rosapi_node">
+        <param name="topics_glob" value=""/>
+        <param name="services_glob" value=""/>
+        <param name="params_glob" value=""/>
+    </node> -->
+
+    <!-- Rover ESP32 nodes -->
+    <node name="rover_esp32_node" pkg="rover_esp32" exec="rover_esp32" output="screen">
+        <param name="uart_dev" value="/dev/ttyACM0"/>
+        <param name="baudrate" value="115200"/>
+    </node>
+
+
     <!-- Control nodes -->
     <!-- <include file="$(find-pkg-share rover_teleop)/launch/teleop.launch.xml"/> -->
     <!-- <node pkg="rover_control_node" exec="driver_controller" name="driver_controller" output="screen"/> -->
