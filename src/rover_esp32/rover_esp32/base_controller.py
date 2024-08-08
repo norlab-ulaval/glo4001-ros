@@ -1,5 +1,4 @@
 import json
-import os
 import queue
 import threading
 import time
@@ -7,6 +6,7 @@ from pathlib import Path
 import serial
 import yaml
 from ament_index_python.packages import get_package_share_directory
+import struct
 
 from .read_line import ReadLine
 
@@ -37,6 +37,30 @@ class BaseController:
     def read_feedback(self):
         try:
             while self.rl.s.in_waiting > 0:
+                self.data_buffer = self.rl.readline()
+                if len(self.data_buffer) > 30:
+                    self.base_data = self.data_buffer
+                    self.data_buffer = None
+                    return self._parse_bytes_array(self.base_data)
+            self.rl.clear_buffer()
+            self.data_buffer = self.rl.readline()
+            self.base_data = self.data_buffer
+            return self._parse_bytes_array(self.base_data)
+        except Exception as e:
+            self.rl.clear_buffer()
+
+    def _parse_bytes_array(self, data):
+        # Contains the values for
+        # FEEDBACK_BASE_INFO, speedGetA, speedGetB, gx, gy, gz, ax, ay, az, mx, my, mz, rgx, rgy, rgz, rax, ray, raz, rmx, rmy, rmz, ax_offset, ay_offset, az_offset, gx_offset, gy_offset, gz_offset, en_odom_l, en_odom_r, loadVoltage_V
+        # All of the values are doubles (8 bytes)
+        keys = ['FEEDBACK_BASE_INFO', 'speedGetA', 'speedGetB', 'gx', 'gy', 'gz', 'ax', 'ay', 'az', 'mx', 'my', 'mz', 'rgx', 'rgy', 'rgz', 'rax', 'ray',
+                'raz', 'rmx', 'rmy', 'rmz', 'ax_offset', 'ay_offset', 'az_offset', 'gx_offset', 'gy_offset', 'gz_offset', 'en_odom_l', 'en_odom_r', 'loadVoltage_V']
+        values = struct.unpack('d' * 31, data)
+        return dict(zip(keys, values))
+
+    def read_feedback_json(self):
+        try:
+            while self.rl.s.in_waiting > 0:
                 self.data_buffer = json.loads(
                     self.rl.readline().decode('utf-8'))
                 if 'T' in self.data_buffer:
@@ -65,6 +89,7 @@ class BaseController:
             data = self.command_queue.get()
             self.ser.write((json.dumps(data) + '\n').encode("utf-8"))
 
+    # Commands from https://github.com/norlab-ulaval/glo4001-esp32-robot/blob/main/ROS_Driver/json_cmd.h
     def set_feedback_flow(self, enabled):
         cmd = 1 if enabled else 0
         data = {"T": 131, "cmd": cmd}
@@ -75,7 +100,7 @@ class BaseController:
         self.send_command(data)
 
     def get_feedback(self):
-        data = {"T":130}
+        data = {"T": 130}
         self.send_command(data)
 
     # def gimbal_emergency_stop(self):

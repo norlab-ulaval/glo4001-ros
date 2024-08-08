@@ -34,7 +34,7 @@ class ReadLine:
         self.breath_light_flag = True
 
     def readline(self):
-        i = self.buf.find(b"\n")
+        i = self.buf.find(b"\r")
         if i >= 0:
             r = self.buf[:i + 1]
             self.buf = self.buf[i + 1:]
@@ -42,7 +42,7 @@ class ReadLine:
         while True:
             i = max(1, min(512, self.s.in_waiting))
             data = self.s.read(i)
-            i = data.find(b"\n")
+            i = data.find(b"\r")
             if i >= 0:
                 r = self.buf + data[:i + 1]
                 self.buf[0:] = data[i + 1:]
