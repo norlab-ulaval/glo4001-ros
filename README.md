@@ -1,6 +1,12 @@
 # GLO-4001 ROS
 
 ```bash
+git submodule update --init --recursive
+```
+
+## Running
+
+```bash
 sudo apt update
 rosdep update
 rosdep install --from-paths src --ignore-src -r -y

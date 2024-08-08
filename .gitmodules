@@ -1,0 +1,6 @@
+[submodule "src/ldlidar_ros2"]
+	path = src/ldlidar_ros2
+	url = git@github.com:ldrobotSensorTeam/ldlidar_ros2.git
+[submodule "src/laser_geometry"]
+	path = src/laser_geometry
+	url = git@github.com:ros-perception/laser_geometry.git

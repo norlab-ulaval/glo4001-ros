@@ -5,7 +5,7 @@ FROM docker.io/osrf/ros:${TAG}
 RUN apt update && apt upgrade -y
 
 # Dependencies
-RUN apt update && apt install -y ros-foxy-xacro ros-dev-tools ros-foxy-tf-transformations ros-foxy-rosbridge-server
+RUN apt update && apt install -y ros-foxy-xacro ros-dev-tools ros-foxy-tf-transformations ros-foxy-rosbridge-server ros-foxy-depthai-ros
 
 # Clean up
 RUN apt clean && \
