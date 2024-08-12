@@ -55,7 +55,7 @@ class BaseController:
         # All of the values are doubles (8 bytes)
         keys = ['FEEDBACK_BASE_INFO', 'speedGetA', 'speedGetB', 'gx', 'gy', 'gz', 'ax', 'ay', 'az', 'mx', 'my', 'mz', 'rgx', 'rgy', 'rgz', 'rax', 'ray',
                 'raz', 'rmx', 'rmy', 'rmz', 'ax_offset', 'ay_offset', 'az_offset', 'gx_offset', 'gy_offset', 'gz_offset', 'en_odom_l', 'en_odom_r', 'loadVoltage_V']
-        values = struct.unpack('d' * 31, data)
+        values = struct.unpack('f' * 31, data)
         return dict(zip(keys, values))
 
     def read_feedback_json(self):
