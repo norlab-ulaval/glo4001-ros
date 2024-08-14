@@ -48,14 +48,14 @@ class BaseController:
             return self._parse_bytes_array(self.base_data)
         except Exception as e:
             self.rl.clear_buffer()
+            raise e
 
     def _parse_bytes_array(self, data):
-        # Contains the values for
-        # FEEDBACK_BASE_INFO, speedGetA, speedGetB, gx, gy, gz, ax, ay, az, mx, my, mz, rgx, rgy, rgz, rax, ray, raz, rmx, rmy, rmz, ax_offset, ay_offset, az_offset, gx_offset, gy_offset, gz_offset, en_odom_l, en_odom_r, loadVoltage_V
-        # All of the values are doubles (8 bytes)
-        keys = ['FEEDBACK_BASE_INFO', 'speedGetA', 'speedGetB', 'gx', 'gy', 'gz', 'ax', 'ay', 'az', 'mx', 'my', 'mz', 'rgx', 'rgy', 'rgz', 'rax', 'ray',
+        keys = ['speedGetA', 'speedGetB', 'gx', 'gy', 'gz', 'ax', 'ay', 'az', 'mx', 'my', 'mz', 'rgx', 'rgy', 'rgz', 'rax', 'ray',
                 'raz', 'rmx', 'rmy', 'rmz', 'ax_offset', 'ay_offset', 'az_offset', 'gx_offset', 'gy_offset', 'gz_offset', 'en_odom_l', 'en_odom_r', 'loadVoltage_V']
-        values = struct.unpack('f' * 31, data)
+        # raise RuntimeError(data)
+        data = data[:-4]
+        values = struct.unpack('f' * len(keys), data)
         return dict(zip(keys, values))
 
     def read_feedback_json(self):

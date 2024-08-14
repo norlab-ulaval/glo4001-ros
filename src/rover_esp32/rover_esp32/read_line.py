@@ -34,18 +34,19 @@ class ReadLine:
         self.breath_light_flag = True
 
     def readline(self):
-        i = self.buf.find(b"\r")
+        sentinel = b"\r\n"
+        i = self.buf.find(sentinel)
         if i >= 0:
-            r = self.buf[:i + 1]
-            self.buf = self.buf[i + 1:]
+            r = self.buf[:i + len(sentinel)]
+            self.buf = self.buf[i + len(sentinel):]
             return r
         while True:
             i = max(1, min(512, self.s.in_waiting))
             data = self.s.read(i)
-            i = data.find(b"\r")
+            i = data.find(sentinel)
             if i >= 0:
-                r = self.buf + data[:i + 1]
-                self.buf[0:] = data[i + 1:]
+                r = self.buf + data[:i + len(sentinel)]
+                self.buf[0:] = data[i + len(sentinel):]
                 return r
             else:
                 self.buf.extend(data)
@@ -63,10 +64,13 @@ class ReadLine:
                 buffer_clear = True
                 sensor_readline = self.sensor_data_ser.readline()
                 if len(sensor_readline) <= self.sensor_data_max_len:
-                    self.sensor_list.append(sensor_readline.decode('utf-8')[:-2])
+                    self.sensor_list.append(
+                        sensor_readline.decode('utf-8')[:-2])
                 else:
-                    self.sensor_list.append(sensor_readline.decode('utf-8')[:self.sensor_data_max_len])
-                    self.sensor_list.append(sensor_readline.decode('utf-8')[self.sensor_data_max_len:-2])
+                    self.sensor_list.append(sensor_readline.decode(
+                        'utf-8')[:self.sensor_data_max_len])
+                    self.sensor_list.append(sensor_readline.decode(
+                        'utf-8')[self.sensor_data_max_len:-2])
             if buffer_clear:
                 self.sensor_data = self.sensor_list.copy()
                 self.sensor_list.clear()
@@ -86,7 +90,8 @@ class ReadLine:
             distance = data[offset + 1] << 8 | data[offset]
             confidence = data[offset + 2]
             # lidar_angles.append(np.radians(start_angle + i * 0.167))
-            self.lidar_angles.append(np.radians(start_angle + i * 0.83333 + 180))
+            self.lidar_angles.append(np.radians(
+                start_angle + i * 0.83333 + 180))
             # lidar_angles.append(np.radians(start_angle + end_angle))
             self.lidar_distances.append(distance)
         # end_angle = (data[43] << 8 | data[42]) * 0.01
@@ -118,4 +123,5 @@ class ReadLine:
             self.lidar_distances.clear()
         except Exception as e:
             print(f"[base_ctrl.lidar_data_recv] error: {e}")
-            self.lidar_ser = serial.Serial(glob.glob('/dev/ttyACM*')[0], 230400, timeout=1)
+            self.lidar_ser = serial.Serial(
+                glob.glob('/dev/ttyACM*')[0], 230400, timeout=1)

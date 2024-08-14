@@ -38,7 +38,7 @@ class RoverEsp32(Node):
         except Exception as e:
             self.get_logger().error(f'Error: {e}')
             return
-        
+            
         if status is None:
             return
 
