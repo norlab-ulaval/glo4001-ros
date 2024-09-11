@@ -3,9 +3,8 @@ import Adafruit_ADS1x15
 import std_msgs
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import FluidPressure
 from rclpy.executors import SingleThreadedExecutor
-
+from std_msgs.msg import Float32
 
 
 class ADS1x15Node(Node):
@@ -25,8 +24,8 @@ class ADS1x15Node(Node):
         self.adc.start_adc(0, gain=self.GAIN)
         # Publishers
         self.setra_pub_ = self.create_publisher(
-            FluidPressure,
-            "pressure",
+            Float32,
+            "range",
             10,
         )
         self.pub_clk_ = self.create_timer(
@@ -34,13 +33,9 @@ class ADS1x15Node(Node):
             self.publish_cback,
         )
 
-        self.pressure_msg = FluidPressure()
-        self.pressure_msg.header.frame_id = self.frame_id
-        self.pressure_msg.variance = 0.01
-        self.min_pressure = 80000.0
-        self.max_pressure = 110000.0
+        self.float_msg = Float32()
         self.min_voltage = 0.0
-        self.max_voltage = 5.0
+        self.max_voltage = 3.3
         self.adc_min_voltage = 0.0
         self.adc_max_voltage = 6.144
         self.adc_min_digital = 0.0
@@ -52,20 +47,12 @@ class ADS1x15Node(Node):
 
         return voltage
     
-    def voltage_to_pressure(self, voltage_value):
-        
-        pressure = (voltage_value - self.min_voltage)/(self.max_voltage - self.min_voltage) * (self.max_pressure - self.min_pressure) + self.min_pressure
-
-        return pressure
-
     def publish_cback(self):
         stamp = self.get_clock().now().to_msg()
         adc_value = self.adc.get_last_result()
         voltage = self.reading_to_voltage(adc_value)
-        pressure = self.voltage_to_pressure(voltage)
-        self.pressure_msg.header.stamp = stamp
-        self.pressure_msg.fluid_pressure = pressure
-        self.setra_pub_.publish(self.pressure_msg)
+        self.float_msg.data = voltage
+        self.setra_pub_.publish(self.float_msg)
 
 
 def main(args=None):
