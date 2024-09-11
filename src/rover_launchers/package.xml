@@ -10,6 +10,7 @@
   <exec_depend>rover_esp32</exec_depend>
   <exec_depend>ldlidar_ros2</exec_depend>
   <exec_depend>depthai_ros_driver</exec_depend>
+  <exec_depend>ros-foxy-rosbridge-server</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
