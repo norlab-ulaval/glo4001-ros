@@ -8,6 +8,7 @@
   <license>TODO: License declaration</license>
 
   <exec_depend>rover_esp32</exec_depend>
+  <exec_depend>ADS1x15</exec_depend>
   <exec_depend>ldlidar_ros2</exec_depend>
   <exec_depend>depthai_ros_driver</exec_depend>
   <exec_depend>ros-foxy-rosbridge-server</exec_depend>

@@ -21,9 +21,11 @@
 		"--security-opt=seccomp:unconfined",
 		"--security-opt=apparmor:unconfined",
 		"--privileged",
-		"--device=/dev/ttyUSB0",
-		"--device=/dev/ttyACM0",
-		"--device=/dev/ttyACM1"
+		"-v=/dev:/dev"
+		// "--device=/dev/ttyUSB0",
+		// "--device=/dev/ttyACM0",
+		// "--device=/dev/ttyACM1",
+		// "--device=/dev/usb/hiddev0"
 		// uncomment to use intel iGPU
 		// "--device=/dev/dri"
 	],
