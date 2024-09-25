@@ -2,11 +2,11 @@
     <!-- rosbridge to communicate via websocket -->
     <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" />
 
-    <!-- Rover ESP32 nodes
+    <!-- Rover ESP32 nodes -->
     <node name="rover_esp32_node" pkg="rover_esp32" exec="rover_esp32" output="screen">
         <param name="uart_dev" value="/dev/ttyACM0"/>
         <param name="baudrate" value="115200"/>
-    </node> -->
+    </node>
 
     <!-- Lidar node -->
     <!-- <node pkg="ldlidar_ros2" exec="ldlidar_ros2_node" name="ldlidar_ros2_node" output="screen" respawn="true">
@@ -26,7 +26,7 @@
 
     <!-- Camera node -->
     <!-- <include file="$(find-pkg-share depthai_ros_driver)/launch/camera.launch.py"> -->
-    <include file="$(find-pkg-share depthai_examples)/launch/rgb_stereo_node.launch.py">
+    <!-- <include file="$(find-pkg-share depthai_examples)/launch/rgb_stereo_node.launch.py">
         <!-- <arg name="params_file" value="$(find-pkg-share rover_launchers)/config/camera.yaml"/> -->
     </include>
     <node pkg="rover_launchers" exec="dummy_listener" name="dummy_listener_rgb" output="screen">
@@ -34,7 +34,7 @@
     </node>
     <node pkg="rover_launchers" exec="dummy_listener" name="dummy_listener_depth" output="screen">
         <param name="topic_name" value="/stereo/depth"/>
-    </node>
+    </node> -->
 
     <!-- Description node -->
     <!-- <include file="$(find-pkg-share rover_description)/launch/description_launch.py"/> -->
