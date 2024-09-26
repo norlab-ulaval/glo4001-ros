@@ -27,7 +27,7 @@
     <!-- Camera node -->
     <!-- <include file="$(find-pkg-share depthai_ros_driver)/launch/camera.launch.py"> -->
     <!-- <include file="$(find-pkg-share depthai_examples)/launch/rgb_stereo_node.launch.py">
-        <!-- <arg name="params_file" value="$(find-pkg-share rover_launchers)/config/camera.yaml"/> -->
+        <arg name="params_file" value="$(find-pkg-share rover_launchers)/config/camera.yaml"/>
     </include>
     <node pkg="rover_launchers" exec="dummy_listener" name="dummy_listener_rgb" output="screen">
         <param name="topic_name" value="/color/video/image"/>
