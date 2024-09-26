@@ -33,7 +33,7 @@ class RoverEsp32(Node):
         self.state_error_count = 0
 
     def state_callback(self):
-        if self.state_error_count > 10:
+        if self.state_error_count >= 1:
             self.base.clear_buffer()
             self.state_error_count = 0
             

@@ -17,6 +17,8 @@ with open(pkg_path / 'config/config.yaml', 'r') as yaml_file:
 
 class BaseController:
     def __init__(self, uart_dev_set, baud_set):
+        self.uart_dev_set = uart_dev_set
+        self.baud_set = baud_set
         self.ser = serial.Serial(uart_dev_set, baud_set, timeout=1)
         self.ser.flush()
         self.rl = ReadLine(self.ser)
@@ -83,6 +85,9 @@ class BaseController:
 
     def clear_buffer(self):
         self.rl.clear_buffer()
+        self.ser.close()
+        del self.ser
+        self.ser = serial.Serial(self.uart_dev_set, self.baud_set, timeout=1)
 
     def send_command(self, data):
         self.command_queue.put(data)
