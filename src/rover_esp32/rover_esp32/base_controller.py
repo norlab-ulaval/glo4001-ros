@@ -49,7 +49,7 @@ class BaseController:
             self.base_data = self.data_buffer
             return self._parse_bytes_array(self.base_data)
         except Exception as e:
-            self.rl.clear_buffer()
+            self.clear_buffer()
             raise e
 
     def _parse_bytes_array(self, data):
@@ -75,7 +75,7 @@ class BaseController:
             self.base_data = self.data_buffer
             return self.base_data
         except Exception as e:
-            self.rl.clear_buffer()
+            self.clear_buffer()
             # print(f"[base_ctrl.feedback_data] error: {e}\nraw data: {self.rl.readline().decode('utf-8')}")
 
     def on_data_received(self):

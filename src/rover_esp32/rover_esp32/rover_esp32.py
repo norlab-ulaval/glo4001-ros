@@ -30,19 +30,14 @@ class RoverEsp32(Node):
         self.state_timer = self.create_timer(0.001, self.state_callback)
         self.command_sub = self.create_subscription(
             std_msgs.msg.String, 'rover/command', self.command_callback, 10)
-        self.state_error_count = 0
 
-    def state_callback(self):
-        if self.state_error_count >= 1:
-            self.base.clear_buffer()
-            self.state_error_count = 0
-            
+    def state_callback(self):          
         try:
             self.base.get_feedback()
             status = self.base.read_feedback()
         except Exception as e:
             self.get_logger().error(f'Error: {e}')
-            self.state_error_count += 1
+            self.base.clear_buffer()
             return
             
         if status is None:
@@ -53,7 +48,6 @@ class RoverEsp32(Node):
         msg = std_msgs.msg.String()
         msg.data = str(status)
         self.state_pub.publish(msg)
-        self.state_error_count = 0
 
     def command_callback(self, msg):
         try:
@@ -63,6 +57,7 @@ class RoverEsp32(Node):
             self.base.send_command(command)
         except Exception as e:
             print(f'Error: {e}')
+            self.base.clear_buffer()
 
 
 def main(args=None):
