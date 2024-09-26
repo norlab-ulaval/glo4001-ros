@@ -81,6 +81,9 @@ class BaseController:
         data_read = json.loads(self.rl.readline().decode('utf-8'))
         return data_read
 
+    def clear_buffer(self):
+        self.rl.clear_buffer()
+
     def send_command(self, data):
         self.command_queue.put(data)
 
