@@ -88,6 +88,9 @@ class BaseController:
         self.ser.close()
         del self.ser
         self.ser = serial.Serial(self.uart_dev_set, self.baud_set, timeout=1)
+        self.ser.flush()
+        del self.rl
+        self.rl = ReadLine(self.ser)
 
     def send_command(self, data):
         self.command_queue.put(data)
