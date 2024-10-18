@@ -9,7 +9,7 @@
     </node>
 
     <!-- Lidar node -->
-    <!-- <node pkg="ldlidar_ros2" exec="ldlidar_ros2_node" name="ldlidar_ros2_node" output="screen" respawn="true">
+    <node pkg="ldlidar_ros2" exec="ldlidar_ros2_node" name="ldlidar_ros2_node" output="screen" respawn="true">
         <param name="product_name" value="LDLiDAR_LD19"/>
         <param name="laser_scan_topic_name" value="scan"/>
         <param name="point_cloud_2d_topic_name" value="pointcloud2d"/>
@@ -22,7 +22,7 @@
         <param name="angle_crop_max" value="225.0"/>
         <param name="range_min" value="0.02"/>
         <param name="range_max" value="12.0"/>
-    </node> -->
+    </node>
 
     <!-- Camera node -->
     <!-- <include file="$(find-pkg-share depthai_ros_driver)/launch/camera.launch.py"> -->
@@ -42,4 +42,3 @@
     <!-- ADC node -->
     <!-- <include file="$(find-pkg-share ads1x15_ros)/launch/ads1x15_node_launch.py"/> -->
 </launch>
-
